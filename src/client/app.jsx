@@ -9,20 +9,19 @@ put each one in a component/container file then import them */
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Segment, Header, Button, Divider, Grid } from 'semantic-ui-react';
+import { Icon, Segment, Header, Button, Divider, Grid } from 'semantic-ui-react';
 
 import '../../public/style/style.scss';
 import { APP_NAME } from '../shared/config';
-import { sayHelloAC } from './index';
+import { setRunningAC } from './index';
 
 
-const MessageCom = ({ message }) => (
-    <p>{message}</p>
+const MessageCom = ({ running }) => (
+    <p>{running ? 'The game is running' : 'The game is not running'}</p>
 );
-
 const MessageCn = connect(
     state => ({
-        message: state.get('message'),
+        running: state.get('running'),
     })
 )(MessageCom);
 
@@ -30,15 +29,27 @@ const MessageCn = connect(
 const ButtonCom = ({ label, handleClick }) => (
     <Button onClick={handleClick}>{label}</Button>
 );
-
 const ButtonCn = connect(
     state => ({
-        label: 'Say hello',
+        label: 'Set Running',
     }),
     dispatch => ({
-        handleClick: () => { dispatch(sayHelloAC('Hello!')) },
+        handleClick: () => { dispatch(setRunningAC(true)) },
     })
 )(ButtonCom);
+
+
+const GenerationCounterCom = ({ generation }) => (
+    <Header.Subheader>
+        Generation: {generation}
+    </Header.Subheader>
+);
+const GenerationCounterCn = connect(
+    state => ({
+        generation: state.get('generation'),
+    })
+)(GenerationCounterCom);
+
 
 
 const colors = [
@@ -49,14 +60,22 @@ const colors = [
 const App = () => (
     <div id="my-wrapper">
         <div className='container'>
-            <Header as="h1" className='override'>{APP_NAME}</Header>
+            <Header as='h2'>
+                <Icon name='tree' />
+                <Header.Content>
+                    {APP_NAME}
+                    <Header.Subheader>
+                        <GenerationCounterCn />
+                    </Header.Subheader>
+                </Header.Content>
+            </Header>
             <MessageCn />
             <div>
                 <ButtonCn />
                 <Button icon='play' content='Play' />
                 <Button icon='pause' content='Pause' />
                 <Button icon='bomb' content='Clear' />
-                <Button icon='shuffle' content='Shuffle' />
+                <Button icon='shuffle' content='Randomise' />
             </div>
         </div>
         <Divider/>

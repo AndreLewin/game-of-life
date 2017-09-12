@@ -1,7 +1,3 @@
-/* The Redux store and one reducer is here.
-If there are several/too many reducers, put them in a reducer folder.
-The same can be said about the action(s) and action creator(s) -> action folder. */
-
 import 'babel-polyfill';
 
 import React from 'react';
@@ -19,31 +15,21 @@ import { isProd } from '../shared/util';
 
 
 /* Actions */
-const SAY_HELLO = 'SAY_HELLO';
-// Make the action creator sayHello who creates actions of type SAY_HELLO
-// sayHello('Sal') returns { type: SAY_HELLO, payload: 'Sal' }
-// Equivalent to the shorthand: export const sayHello = createAction(SAY_HELLO);
-export const sayHelloAC = (payload) => (
-    {
-        type: SAY_HELLO,
-        payload: payload
-    }
-);
-
+const SET_RUNNING = 'SET_RUNNING';
+export const setRunningAC = createAction(SET_RUNNING);
 
 /* Reducer */
 // Answers to store.dispatch(ACTION);
 const initialState = Immutable.fromJS({
-    message: 'Initial reducer message',
-    generation: 0,
+    generation: 1,
     running: false,
     grid: new Array(10),
 });
-// action: { type: string, payload: any } (Flux Standard Action)
+
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case SAY_HELLO:
-            return state.set('message', action.payload);
+        case SET_RUNNING:
+            return state.set('running', action.payload);
         default:
             return state;
     }
