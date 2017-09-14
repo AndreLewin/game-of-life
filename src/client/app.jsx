@@ -9,7 +9,7 @@ put each one in a component/container file then import them */
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Icon, Segment, Header, Button, Divider, Grid } from 'semantic-ui-react';
+import { Icon, Segment, Header, Button, Divider, Grid, Table } from 'semantic-ui-react';
 
 import '../../public/style/style.scss';
 import { APP_NAME } from '../shared/config';
@@ -51,11 +51,50 @@ const GenerationCounterCn = connect(
 )(GenerationCounterCom);
 
 
+const BoardCom = ({ grid }) => {
 
-const colors = [
-    'red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue',
-    'violet', 'purple', 'pink', 'brown', 'grey', 'black',
-];
+    /*
+
+     <tbody>
+     {this.props.board.map((row,i) =>
+     <tr key={i}> {row.map((cell,j) =>
+     <Cell
+     key={j}
+     alive={cell.status}
+     newBorn={cell.newBorn}
+     handleClick={() => this.props.toggleAlive(i,j)}
+     />)}
+     </tr> )}
+     </tbody>
+
+     */
+
+    console.log(grid);
+    console.log(grid.get(0));
+
+    return (
+        <div className='Board'>
+            <table>
+                <tbody>
+                    {grid.map((row, i) => (
+                        <tr>
+                            {row.map((square, j) => (
+                                <td>{square}</td>
+                            ))}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+};
+const BoardCn = connect(
+    state => ({
+        grid: state.get('grid'),
+    })
+)(BoardCom);
+
+
 
 const App = () => (
     <div id="my-wrapper">
@@ -79,15 +118,7 @@ const App = () => (
             </div>
         </div>
         <Divider/>
-        <div className='container'>
-            <Grid columns={5} padded>
-                {colors.map(color => (
-                    <Grid.Column color={color} key={color}>
-                        {color}
-                    </Grid.Column>
-                ))}
-            </Grid>
-        </div>
+        <BoardCn />
     </div>
 );
 

@@ -12,7 +12,7 @@ import { Provider } from 'react-redux';
 import App from './app';
 import { APP_CONTAINER_SELECTOR } from '../shared/config';
 import { isProd } from '../shared/util';
-
+import { createGrid } from './helpers'
 
 /* Actions */
 const SET_RUNNING = 'SET_RUNNING';
@@ -23,7 +23,7 @@ export const setRunningAC = createAction(SET_RUNNING);
 const initialState = Immutable.fromJS({
     generation: 1,
     running: false,
-    grid: new Array(10),
+    grid: createGrid()
 });
 
 const reducer = (state = initialState, action) => {

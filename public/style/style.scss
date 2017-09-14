@@ -1,5 +1,35 @@
+$padding: 20px;
+$border: 1px solid grey;
+$cellSize: 20px;
+$animation: 0.5s linear;
+
 #my-wrapper {
   .container {
-    padding: 20px;
+    padding: $padding;
+  }
+
+  .Board {
+    padding: $padding;
+
+    table {
+      border: $border;
+      border-spacing: 0;
+    }
+
+    td {
+      border: $border;
+      height: $cellSize;
+      width: $cellSize;
+    }
+
+    .dead {
+      background: white;
+      animation: $animation;
+    }
+
+    .alive {
+      background: green;
+      animation: $animation;
+    }
   }
 }
