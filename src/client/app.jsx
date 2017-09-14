@@ -13,30 +13,7 @@ import { Icon, Segment, Header, Button, Divider, Grid, Table } from 'semantic-ui
 
 import '../../public/style/style.scss';
 import { APP_NAME } from '../shared/config';
-import { setRunningAC } from './index';
-
-
-const MessageCom = ({ running }) => (
-    <p>{running ? 'The game is running' : 'The game is not running'}</p>
-);
-const MessageCn = connect(
-    state => ({
-        running: state.get('running'),
-    })
-)(MessageCom);
-
-
-const ButtonCom = ({ label, handleClick }) => (
-    <Button onClick={handleClick}>{label}</Button>
-);
-const ButtonCn = connect(
-    state => ({
-        label: 'Set Running',
-    }),
-    dispatch => ({
-        handleClick: () => { dispatch(setRunningAC(true)) },
-    })
-)(ButtonCom);
+import { playGameAC, pauseGameAC, clearGridAC, randomiseGridAC } from './index';
 
 
 const GenerationCounterCom = ({ generation }) => (
@@ -51,35 +28,54 @@ const GenerationCounterCn = connect(
 )(GenerationCounterCom);
 
 
+const MessageCom = ({ running }) => (
+    <p>{running ? 'The game is running' : 'The game is not running'}</p>
+);
+const MessageCn = connect(
+    state => ({
+        running: state.get('running'),
+    })
+)(MessageCom);
+
+
+const ButtonsCom = ({ running, handlePlayClick, handlePauseClick, handleClearClick, handleRandomiseClick }) => (
+    <div>
+        <Button icon='play' content='Play' onClick={handlePlayClick} />
+        <Button icon='pause' content='Pause' onClick={handlePauseClick} />
+        <Button icon='bomb' content='Clear' onClick={handleClearClick} />
+        <Button icon='shuffle' content='Randomise' onClick={handleRandomiseClick} />
+    </div>
+);
+const ButtonsCn = connect(
+    state => ({
+        running: state.get('running'),
+    }),
+    dispatch => ({
+        handlePlayClick: () => { dispatch(playGameAC()) },
+        handlePauseClick: () => { dispatch(pauseGameAC()) },
+        handleClearClick: () => { dispatch(clearGridAC()) },
+        handleRandomiseClick: () => { dispatch(randomiseGridAC()) },
+    })
+)(ButtonsCom);
+
+
+const Square = ({alive}) => {
+    return (
+        <td className={alive ? "alive" : "dead"}> </td>
+    );
+};
 const BoardCom = ({ grid }) => {
-
-    /*
-
-     <tbody>
-     {this.props.board.map((row,i) =>
-     <tr key={i}> {row.map((cell,j) =>
-     <Cell
-     key={j}
-     alive={cell.status}
-     newBorn={cell.newBorn}
-     handleClick={() => this.props.toggleAlive(i,j)}
-     />)}
-     </tr> )}
-     </tbody>
-
-     */
-
-    console.log(grid);
-    console.log(grid.get(0));
-
     return (
         <div className='Board'>
             <table>
                 <tbody>
                     {grid.map((row, i) => (
-                        <tr>
+                        <tr key={i}>
                             {row.map((square, j) => (
-                                <td>{square}</td>
+                                <Square
+                                    alive={square}
+                                    key={j}
+                                />
                             ))}
                         </tr>
                     ))}
@@ -95,7 +91,6 @@ const BoardCn = connect(
 )(BoardCom);
 
 
-
 const App = () => (
     <div id="my-wrapper">
         <div className='container'>
@@ -108,14 +103,8 @@ const App = () => (
                     </Header.Subheader>
                 </Header.Content>
             </Header>
-            <MessageCn />
-            <div>
-                <ButtonCn />
-                <Button icon='play' content='Play' />
-                <Button icon='pause' content='Pause' />
-                <Button icon='bomb' content='Clear' />
-                <Button icon='shuffle' content='Randomise' />
-            </div>
+            <MessageCn/>
+            <ButtonsCn/>
         </div>
         <Divider/>
         <BoardCn />

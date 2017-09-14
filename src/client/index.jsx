@@ -12,24 +12,36 @@ import { Provider } from 'react-redux';
 import App from './app';
 import { APP_CONTAINER_SELECTOR } from '../shared/config';
 import { isProd } from '../shared/util';
-import { createGrid } from './helpers'
+import { createRandomGrid, createEmptyGrid } from './helpers'
 
 /* Actions */
-const SET_RUNNING = 'SET_RUNNING';
-export const setRunningAC = createAction(SET_RUNNING);
+const PLAY_GAME = 'PLAY_GAME';
+export const playGameAC = createAction(PLAY_GAME);
+const PAUSE_GAME = 'PAUSE_GAME';
+export const pauseGameAC = createAction(PAUSE_GAME);
+const CLEAR_GRID = 'CLEAR_GRID';
+export const clearGridAC = createAction(CLEAR_GRID);
+const RANDOMISE_GRID = 'RANDOMISE_GRID';
+export const randomiseGridAC = createAction(RANDOMISE_GRID);
 
 /* Reducer */
 // Answers to store.dispatch(ACTION);
 const initialState = Immutable.fromJS({
     generation: 1,
     running: false,
-    grid: createGrid()
+    grid: createRandomGrid()
 });
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case SET_RUNNING:
-            return state.set('running', action.payload);
+        case PLAY_GAME:
+            return state.set('running', true);
+        case PAUSE_GAME:
+            return state.set('running', false);
+        case CLEAR_GRID:
+            return state.set('grid', createEmptyGrid()).set('generation', 1).set('running', false);
+        case RANDOMISE_GRID:
+            return state.set('grid', createRandomGrid()).set('generation', 1).set('running', false);
         default:
             return state;
     }
@@ -37,7 +49,6 @@ const reducer = (state = initialState, action) => {
 
 
 /* Store */
-// I would rather do reducer composition (in reducer) instead of using combineReducers({att: reducer});
 const store = createStore(reducer,
     isProd ? undefined : window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
