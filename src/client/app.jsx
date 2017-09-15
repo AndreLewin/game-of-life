@@ -13,7 +13,7 @@ import { Icon, Segment, Header, Button, Divider, Grid, Table } from 'semantic-ui
 
 import '../../public/style/style.scss';
 import { APP_NAME } from '../shared/config';
-import { playGameAC, pauseGameAC, clearGridAC, randomiseGridAC } from './index';
+import { playGameAC, pauseGameAC, clearGridAC, randomiseGridAC, switchStateAC, nextGenerationAC } from './index';
 
 
 const GenerationCounterCom = ({ generation }) => (
@@ -38,10 +38,10 @@ const MessageCn = connect(
 )(MessageCom);
 
 
-const ButtonsCom = ({ running, handlePlayClick, handlePauseClick, handleClearClick, handleRandomiseClick }) => (
+const ButtonsCom = ({ running, handlePlayClick, handlePauseClick, handleClearClick, handleRandomiseClick, handleNextGeneration }) => (
     <div>
-        <Button icon='play' content='Play' onClick={handlePlayClick} />
-        <Button icon='pause' content='Pause' onClick={handlePauseClick} />
+        <Button positive={!running} icon='play' content='Play' onClick={handleNextGeneration} />
+        <Button negative={running} icon='pause' content='Pause' onClick={handlePauseClick} />
         <Button icon='bomb' content='Clear' onClick={handleClearClick} />
         <Button icon='shuffle' content='Randomise' onClick={handleRandomiseClick} />
     </div>
@@ -55,16 +55,20 @@ const ButtonsCn = connect(
         handlePauseClick: () => { dispatch(pauseGameAC()) },
         handleClearClick: () => { dispatch(clearGridAC()) },
         handleRandomiseClick: () => { dispatch(randomiseGridAC()) },
+        handleNextGeneration: () => { dispatch(nextGenerationAC()) }
     })
 )(ButtonsCom);
 
 
-const Square = ({alive}) => {
+const Square = ({alive, row, column, handleSquareClick}) => {
     return (
-        <td className={alive ? "alive" : "dead"}> </td>
+        <td
+            className={alive ? "alive" : "dead"}
+            onClick={() => handleSquareClick({i:row, j:column})}
+        > </td>
     );
 };
-const BoardCom = ({ grid }) => {
+const BoardCom = ({ grid, handleSquareClick }) => {
     return (
         <div className='Board'>
             <table>
@@ -75,6 +79,9 @@ const BoardCom = ({ grid }) => {
                                 <Square
                                     alive={square}
                                     key={j}
+                                    row={i}
+                                    column={j}
+                                    handleSquareClick={handleSquareClick}
                                 />
                             ))}
                         </tr>
@@ -87,6 +94,9 @@ const BoardCom = ({ grid }) => {
 const BoardCn = connect(
     state => ({
         grid: state.get('grid'),
+    }),
+    dispatch => ({
+        handleSquareClick: (payload) => { dispatch(switchStateAC(payload)) }
     })
 )(BoardCom);
 
@@ -106,7 +116,6 @@ const App = () => (
             <MessageCn/>
             <ButtonsCn/>
         </div>
-        <Divider/>
         <BoardCn />
     </div>
 );

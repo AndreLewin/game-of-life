@@ -1,4 +1,4 @@
-$padding: 20px;
+$padding: 20px 20px 0px 20px;
 $border: 1px solid grey;
 $cellSize: 20px;
 $animation: 0.5s linear;
@@ -20,16 +20,18 @@ $animation: 0.5s linear;
       border: $border;
       height: $cellSize;
       width: $cellSize;
+
+      &:hover {
+        opacity: 0.3;
+      }
     }
 
     .dead {
-      background: white;
-      animation: $animation;
+      background: #f4f4f4;
     }
 
     .alive {
       background: green;
-      animation: $animation;
     }
   }
 }
